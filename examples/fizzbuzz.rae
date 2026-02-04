@@ -1,0 +1,70 @@
+#include <std/io>
+
+using std
+
+attr fzzbzz:lower
+(std:0x3C, std:lit_int i, std:0x2F)
+	bind i32 i = ]i[
+end
+
+attr fzzbzz:upper
+(std:0x2F, std:lit_int i, std:0x3E)
+	bind i32 stop = ]i[
+end
+
+attr fzzbzz:rule
+(std:lit_int target, std:0x3D, std:lit_string tag)
+	if i % ]target[ == 0 then
+		call std:print(]tag[)
+		printed = printed + 1
+	end
+end
+
+attr fzzbzz:rules
+(fzzbzz:rule rule)
+	]]rule[[
+end
+
+attr fzzbzz:rules
+(fzzbzz:rules head, std:0x2C, fzzbzz:rule tail)
+	]]head[[
+	]]tail[[
+end
+
+attr fzzbzz:machine
+(fzzbzz:lower lower, fzzbzz:rules rules, fzzbzz:upper upper)
+	]]lower[[
+	]]upper[[
+	bind i32 printed = 0
+	while i <= stop do
+		printed = 0
+
+		]]rules[[
+
+		if printed == 0 then
+			call std:print_int(i)
+		end
+		call std:print("\n")
+		i = i + 1
+	end
+end
+
+export proc main:entry_point
+i32 (i32 argc, ptr std:string argv)
+	call std:print("*******\n")
+	call std:print("*canon*\n")
+	call std:print("*******\n")
+	synth fzzbzz:machine(`<1/ 3="fizz", 5="buzz"/20>`)
+
+	call std:print("************\n")
+	call std:print("*boy wonder*\n")
+	call std:print("************\n")
+	synth fzzbzz:machine(`<99/3="holy ",5="cow ",7="batman"/111>`)
+
+	call std:print("***********************\n")
+	call std:print("*one more for the road*\n")
+	call std:print("***********************\n")
+	synth fzzbzz:machine(`<47/4="capital ",7="steez"/57>`)
+
+	return 0
+end

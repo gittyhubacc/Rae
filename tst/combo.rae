@@ -1,0 +1,22 @@
+# pointers to structs
+
+using std
+
+struct main:point
+	i32 x
+	i32 y
+end
+
+proc main:scale
+unit (ptr main:point pnt)
+	pnt->y = pnt->y * 5
+end
+
+export proc main:entry_point
+i32 ()
+	bind main:point pnt
+	pnt.x = 2
+	pnt.y = 2
+	call scale(&pnt)
+	return pnt.y - 10
+end

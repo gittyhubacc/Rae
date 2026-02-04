@@ -1,0 +1,25 @@
+#include <std/io>
+
+attr main:multiply
+(std:lit_float x, std:0x2C, std:lit_float y)
+	]x[ * ]y[
+end
+
+attr main:say
+(std:lit_int limit, std:0x2C, std:lit_string msg)
+	bind std:i32 i = 0
+	while i < ]limit[ do
+		call std:print(]msg[)
+		call std:print("\n")
+		i = i + 1
+	end
+end
+
+export proc main:entry_point
+std:i32 (std:i32 argc, ptr std:string argv)
+	synth main:say(`3, "Hello, World!"`)
+	if main:multiply(`56.4, 78.2`) == 56.4 * 78.2 then
+		return 0
+	end
+	return 1
+end

@@ -1,0 +1,16 @@
+#ifndef _rae_std_dom__
+#define _rae_std_dom__
+
+import proc std:text_make
+std:i32 (ptr std:string text)
+
+import proc std:elem_make
+std:i32 (ptr std:string name)
+
+import proc std:elem_query 
+std:i32 (ptr std:string id)
+
+import proc std:elem_append 
+std:unit (std:i32 parent, std:i32 child)
+
+#endif

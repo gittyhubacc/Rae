@@ -1,0 +1,11 @@
+#hello, world!
+
+#include <std/io>
+
+using std
+
+export proc main:entry_point
+std:i32 ()
+	call std:print("Hello, World!\n")
+	return 0
+end

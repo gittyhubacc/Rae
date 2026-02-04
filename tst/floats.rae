@@ -1,0 +1,14 @@
+#float arithmetic
+#include <std/io>
+using std
+proc main:test
+std:f32 ()
+	return 44.44 + 55.55 - 22.22
+end
+export proc main:entry_point
+std:i32 ()
+	if test() == 44.44 + 55.55 - 22.22 then
+		return 0
+	end
+	return 1
+end

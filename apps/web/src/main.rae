@@ -1,0 +1,133 @@
+#include <std/io>
+#include <std/dom>
+
+struct html:state
+	std:i32 text
+	std:i32 elem
+	std:i32 parent
+	std:i32[8] stack
+	std:i32 head
+end
+
+attr html:tag_open
+(std:0x3C, std:glob name, std:0x3E)
+	state.elem = std:elem_make(]name[)
+	state.stack[state.head] = state.parent
+	state.head = state.head + 1
+	state.parent = state.elem
+end
+
+attr html:tag_close
+(std:0x3C, std:0x2F, std:glob name, std:0x3E)
+	state.elem = state.parent
+	state.head = state.head - 1
+	state.parent = state.stack[state.head]
+	call std:elem_append(state.parent, state.elem)
+end
+
+attr html:elem_node
+(html:tag_open make_node, html:tag_close append_node)
+	]]make_node[[
+	]]append_node[[
+end
+
+attr html:pre_elem
+(html:tag_open make_node, html:elem_node make_child)
+	]]make_node[[
+	]]make_child[[
+end
+
+attr html:pre_elem
+(html:tag_open make_node, std:glob text)
+	]]make_node[[
+	state.text = std:text_make(]text[)
+	call std:elem_append(state.parent, state.text)
+end
+
+attr html:pre_elem
+(html:pre_elem make_prefix, html:elem_node make_child)
+	]]make_prefix[[
+	]]make_child[[
+end
+
+attr html:pre_elem
+(html:pre_elem make_prefix, std:glob text)
+	]]make_prefix[[
+	state.text = std:text_make(]text[)
+	call std:elem_append(state.parent, state.text)
+end
+
+attr html:elem_node
+(html:pre_elem make_prefix, html:tag_close append_node)
+	]]make_prefix[[
+	]]append_node[[
+end
+
+attr html:fragment
+(html:elem_node node)
+	]]node[[
+end
+
+attr html:fragment
+(html:fragment head, html:elem_node tail)
+	]]head[[
+	]]tail[[
+end
+
+attr html:init_under
+(std:glob name)
+	bind html:state state
+	state.head = 0
+	state.parent = std:elem_query(]name[)
+end
+
+attr html:after_open
+(std:0x3C, std:glob name, std:0x3E)
+    while state.elem < 0 do
+        call std:print("caught error creating '" cat ]name[ cat "', retrying...")
+        state.elem = std:elem_make(]name[)
+        state.parent = state.elem
+    end
+end
+
+aspect html:error_handling
+	html:after_open after html:tag_open
+end
+
+attr html:log_tag_open
+(std:0x3C, std:glob name, std:0x3E)
+    call std:print("creating '" cat ]name[ cat "'")
+end
+
+attr html:log_tag_close
+(std:0x3C, std:0x2F, std:glob name, std:0x3E)
+    call std:print("appending '" cat ]name[ cat "' to parent")
+end
+
+aspect html:logging
+    html:log_tag_open before html:tag_open
+    html:log_tag_close after html:tag_close
+end
+
+export proc main:entry_point
+std:i32 ()
+	synth html:init_under(`body`)
+
+	synth html:fragment 
+	weave html:error_handling
+    weave html:logging
+	(`
+        <h1>Hello, World!</h1>
+		<div>
+			<p>
+				Lorem ipsum.
+				<ul>
+					<li>In <i>venenatis </i>maximus.</li>
+					<li>Proin <b>scelerisque </b>dui.</li>
+					<li>Phasellus.</li>
+				</ul>
+			</p>
+		</div>
+	`)
+	return 0
+end

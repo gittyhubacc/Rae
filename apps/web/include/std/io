@@ -1,0 +1,10 @@
+#ifndef _rae_std_io__
+#define _rae_std_io__
+
+import proc std:print
+std:unit (ptr std:string s)
+
+import proc std:print_int
+std:unit (std:i32 int)
+
+#endif

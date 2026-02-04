@@ -1,0 +1,26 @@
+#basic strings
+
+#include <std/io>
+
+using std
+
+export proc main:entry_point
+i32 ()
+	bind i8[3] buffer
+	buffer[0] = 65
+	buffer[1] = 66
+	buffer[2] = 10
+
+	bind std:string msg
+	msg.len = 3
+	msg.addr = cast &buffer as ptr i8
+
+	call std:print(&msg)
+
+	bind ptr std:string another = "initialized!\n"
+	call std:print(another)
+
+	call std:print("Hello, World!\n")
+
+	return 0
+end

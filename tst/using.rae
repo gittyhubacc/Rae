@@ -1,0 +1,31 @@
+# using
+
+using std
+
+
+struct shape:point
+	i32 x
+	i32 y
+end
+
+struct shape:line
+	point A
+	point B
+end
+
+proc shape:combine
+i32 (line L)
+	return L.A.x * L.B.y
+end
+
+using shape
+
+export proc main:entry_point
+i32 ()
+	bind line L
+	L.A.x = 4
+	L.A.y = 4
+	L.B.x = 2
+	L.B.y = 7
+	return combine(L) - (4 * 7)
+end

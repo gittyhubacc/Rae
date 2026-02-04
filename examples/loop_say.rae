@@ -1,0 +1,33 @@
+#include <std/io>
+
+attr main:number
+(std:lit_int num)
+	]num[
+end
+
+attr main:number
+(main:number num, std:0x78, std:lit_int y)
+	]num[ * ]y[
+end
+
+attr main:say
+(main:number limit, std:0x2C, std:lit_string quoted_msg)
+	bind std:i32 i = 0
+	bind ptr std:string msg = ]quoted_msg[
+
+	msg->addr[0] = 9
+	msg->addr[msg->len - 1] = 10
+
+	while i < ]limit[ do
+		call std:print_int(i)
+		call std:print(msg)
+		i = i + 1
+	end
+end
+
+export proc main:entry_point
+std:i32 (std:i32 argc, ptr std:string argv)
+	synth main:say(`2, "Get Ready to Rock!"`)
+	synth main:say(`3 x 4, "Print this twelve times!"`)
+	return 0
+end

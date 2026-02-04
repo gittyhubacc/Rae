@@ -1,0 +1,17 @@
+# variables
+
+using std
+
+proc main:tst_variables
+i32 (i32 x, i32 y)
+	bind i32 a = x * y # 84
+	bind i32 b = x - y # 5
+	bind i32 c = x / y # 1
+	c = c + 11
+	return a + b + c
+end
+
+export proc main:entry_point
+i32 ()
+	return tst_variables(12, 7) - 101
+end

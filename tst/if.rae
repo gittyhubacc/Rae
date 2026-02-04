@@ -1,0 +1,14 @@
+#if statements
+
+using std
+
+import proc favorite:number
+i32 ()
+
+export proc main:entry_point
+std:i32 ()
+	if favorite:number() == 47 then
+		return 0
+	end
+	return 1
+end

@@ -1,0 +1,18 @@
+#pointers
+
+using std
+
+proc pointer:test
+i32 (ptr i32 first)
+	!first = !first + 7
+	return 0
+end
+
+# i think we are only passing iN fN and ptr T as arguments to procedures
+export proc main:entry_point
+i32 ()
+	bind i32 variable = 40 
+	bind ptr i32 pointer = &variable
+	call pointer:test(&variable)
+	return !pointer - 47
+end

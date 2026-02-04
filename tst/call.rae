@@ -1,0 +1,13 @@
+#procedure call
+
+using std
+
+proc main:function
+i32 (i32 a, i32 b)
+	return (a * b) / 2
+end
+
+export proc main:entry_point
+std:i32 ()
+	return main:function(5, 7) - 17
+end

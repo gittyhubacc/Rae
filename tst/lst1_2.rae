@@ -1,0 +1,17 @@
+# listings 1 and 2
+attr main:mul_attribute
+(std:lit_int x, std:0x2C, std:lit_int y)
+	]x[ * ]y[
+end
+
+proc main:mul_procedure
+std:i32 (std:i32 x, std:i32 y)
+	return x * y
+end
+
+export proc main:entry_point
+std:i32 (std:i32 argc, ptr std:string argv)
+	bind std:i32 a = main:mul_procedure(3, 2)
+	bind std:i32 b = main:mul_attribute(`3, 2`)
+	return a - b
+end

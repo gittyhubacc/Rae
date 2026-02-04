@@ -1,0 +1,59 @@
+#EXPLICIT concatenation~
+
+#include <std/io>
+
+proc main:string_cmp
+std:i32 (ptr std:string left, ptr std:string right)
+	bind std:i32 i = 0
+	bind std:i32 sz = left->len
+	if right->len < left->len then
+		sz = right->len
+	end
+	while i < sz do
+		if left->addr[i] != right->addr[i] then
+			return 0
+		end
+		i = i + 1
+	end
+	return 1
+end
+
+attr main:char
+(std:alphanumeric char)
+	]char[
+end
+
+attr main:char
+(std:punctuation char)
+	]char[
+end
+
+attr main:word
+(main:char char)
+	]char[
+end
+
+attr main:word
+(main:word prefix, main:char char)
+	]prefix[ cat ]char[
+end
+
+proc main:debug
+std:unit (ptr std:string left, ptr std:string right)
+	call std:print("first:\n")
+	call std:print(left)
+	call std:print("\nsecond:\n")
+	call std:print(right)
+	call std:print("\n")
+end
+
+export proc main:entry_point
+std:i32 (std:i32 argc, ptr std:string argv)
+	bind ptr std:string message = "Hello,World!"
+	bind ptr std:string greeting = main:word(`Hello,World!`)
+	#call main:debug(message, greeting)
+	if main:string_cmp(message, greeting) then
+		return 0
+	end
+	return 1
+end

@@ -1,0 +1,15 @@
+#arrays
+
+using std
+
+export proc main:array_tst
+unit (ptr i32 mem)
+	mem[3] = 8
+end
+
+export proc main:entry_point
+std:i32 ()
+	bind i32[8] memory
+	call main:array_tst(cast &memory as ptr i32)
+	return memory[3] - 8
+end

@@ -1,0 +1,26 @@
+# listing 3
+attr main:word_num
+(std:0x74, std:0x77, std:0x6F)
+	2
+end
+
+attr main:word_num
+(std:0x74, std:0x68, std:0x72, std:0x65, std:0x65)
+	3
+end
+
+attr main:word_num
+(main:word_num l, std:0x78, main:word_num r)
+	]l[ * ]r[
+end
+
+export proc main:entry_point
+std:i32 (std:i32 argc, ptr std:string argv)
+	bind std:i32 twelve = main:word_num(`
+	  two x two x three
+	`)
+	bind std:i32 six = main:word_num(`
+	  three x two
+	`)
+	return twelve - six * 2
+end

@@ -1,0 +1,8 @@
+#arithmetic
+
+using std
+
+export proc main:entry_point
+i32 ()
+	return 30 - (2 * 6 + 7) * 4 + 46
+end

@@ -1,0 +1,163 @@
+#include <primitives.h>
+
+proc util:string_cmp
+std:i32 (ptr std:string left, ptr std:string right)
+	bind std:i32 i = 0
+	bind std:i32 sz = left->len
+	if right->len < left->len then
+		sz = right->len
+	end
+	while i < sz do
+		if left->addr[i] != right->addr[i] then
+			return 0
+		end
+		i = i + 1
+	end
+	return 1
+end
+
+#define RES_W 12
+#define RES_H 12
+
+proc filter:and_image
+std:i64 (std:i64 left, std:i64 right)
+	bind std:i8 p = 0
+	bind std:i32 y = 0
+	bind std:i32 x = 0
+	bind std:i64 res = primitive:new_image()
+	while y < RES_H do
+		x = 0
+		while x < RES_W do
+			p = primitive:and_pixel(
+				primitive:get_pixel(left, x, y),
+				primitive:get_pixel(right, x, y))
+			call primitive:set_pixel(res, x, y, p)
+			x = x + 1
+		end
+		y = y + 1
+	end
+	return res
+end
+
+proc filter:or_image
+std:i64 (std:i64 left, std:i64 right)
+	bind std:i8 p = 0
+	bind std:i32 y = 0
+	bind std:i32 x = 0
+	bind std:i64 res = primitive:new_image()
+	while y < RES_H do
+		x = 0
+		while x < RES_W do
+			p = primitive:or_pixel(
+				primitive:get_pixel(left, x, y),
+				primitive:get_pixel(right, x, y))
+			call primitive:set_pixel(res, x, y, p)
+			x = x + 1
+		end
+		y = y + 1
+	end
+	return res
+end
+
+proc filter:not_image
+std:i64 (std:i64 img)
+	bind std:i8 p = 0
+	bind std:i32 y = 0
+	bind std:i32 x = 0
+	bind std:i64 res = primitive:new_image()
+	while y < RES_H do
+		x = 0
+		while x < RES_W do
+			p = primitive:not_pixel(primitive:get_pixel(img, x, y))
+			call primitive:set_pixel(res, x, y, p)
+			x = x + 1
+		end
+		y = y + 1
+	end
+	return res
+end
+
+proc filter:remove
+std:i64 (std:i64 subject, std:i64 mask)
+	return and_image(subject, not_image(mask))
+end
+
+proc filter:top_edge
+std:i64 (std:i64 img)
+	return remove(img, primitive:shift_down(img))
+end
+
+proc filter:bottom_edge
+std:i64 (std:i64 img)
+	return remove(img, primitive:shift_up(img))
+end
+
+proc filter:horizontal_edge
+std:i64 (std:i64 img)
+	return or_image(top_edge(img), bottom_edge(img))
+end
+
+attr filter:expr
+(std:0x28, std:alphanumstr name, std:0x29)
+	if util:string_cmp("src", ]name[) then
+		# push source onto stack
+	end
+end
+
+attr filter:expr
+(std:0x28, std:alphanumstr name, filter:expr_list push_args, std:0x29)
+	]]push_args[[
+	if util:string_cmp("or", ]name[) then
+		# call or with stack contents
+	end
+	if util:string_cmp("and", ]name[) then
+	end
+	if util:string_cmp("up", ]name[) then
+	end
+	if util:string_cmp("down", ]name[) then
+	end
+end
+
+attr filter:expr_list
+(filter:expr e)
+	]]e[[
+end
+
+attr filter:expr_list
+(filter:expr_list list, filter:expr e)
+	]]list[[
+	]]e[[
+end
+
+proc filter:horizontal_edge_fused
+std:i64 (std:i64 image)
+	bind std:i64 res = primitive:new_image()
+	bind std:i64 up = primitive:shift_up(image)
+	bind std:i64 down = primitive:shift_down(image)
+
+	bind std:i8 p = 0
+	bind std:i32 y = 0
+	bind std:i32 x = 0
+	while y < RES_H do
+		x = 0
+		while x < RES_W do
+			p = primitive:or_pixel(
+				primitive:and_pixel(
+					primitive:get_pixel(image, x, y),
+					primitive:not_pixel(primitive:get_pixel(up, x, y))),
+				primitive:and_pixel(
+					primitive:get_pixel(image, x, y),
+					primitive:not_pixel(primitive:get_pixel(down, x, y))))
+			call primitive:set_pixel(res, x, y, p)
+			x = x + 1
+		end
+		y = y + 1
+	end
+	return res
+end
+
+export proc filter:main
+std:i64 (std:i64 image)
+	return image
+end
+

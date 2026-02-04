@@ -1,0 +1,49 @@
+#include <std/io>
+
+proc namespace:some_procedure
+std:i32 (std:i32 x, std:i32 y)
+	return x + y
+end
+
+attr namespace:some_attribute
+(std:lit_int x, std:0x2C comma, std:lit_int y)
+	]x[ + ]y[
+end
+
+attr namespace:some_attribute
+(namespace:some_attribute root, std:0x2C comma, std:lit_int succ)
+	]root[ + ]succ[
+end
+
+proc main:listing_one
+std:i32 (std:i32 argc, ptr std:string argv)
+	call std:print("some_procedure: ")
+	call std:print_int( namespace:some_procedure(78, 33) )
+	call std:print(", some_attribute: ")
+	call std:print_int( namespace:some_attribute(`78, 33`) )
+	call std:print("\n")
+
+	return 0
+end
+
+proc main:listing_two
+std:i32 (std:i32 argc, ptr std:string argv)
+	call std:print("some_procedure: ")
+	call std:print_int(
+		namespace:some_procedure(
+			namespace:some_procedure(30, 48), 33
+		)
+	)
+	call std:print(", some_attribute: ")
+	call std:print_int( namespace:some_attribute(`30, 48, 33`) )
+	call std:print("\n")
+
+	return 0
+end
+
+export proc main:entry_point
+std:i32 (std:i32 argc, ptr std:string argv)
+	call main:listing_one(argc, argv)
+	call main:listing_two(argc, argv)
+	return 0
+end

@@ -1,0 +1,15 @@
+#include <std/io>
+
+using std
+
+export proc main:entry_point
+i32 (i32 argc, ptr string argv)
+
+	bind i32 i = 0
+	while i < argc do
+		call print(&argv[i])
+		call print("\n")
+		i = i + 1
+	end
+	return 0
+end

@@ -1,0 +1,33 @@
+#include <std/io>
+
+attr main:word_number
+(std:0x6F, std:0x6E, std:0x65)
+	1
+end
+
+attr main:word_number
+(std:0x74, std:0x77, std:0x6F)
+	2
+end
+
+attr main:word_number
+(std:0x74, std:0x68, std:0x72, std:0x65, std:0x65)
+	3
+end
+
+attr main:word_number
+(std:0x66, std:0x69, std:0x76, std:0x65)
+	5
+end
+
+attr main:word_number
+(main:word_number left, std:0x74, std:0x69, std:0x6D, std:0x65, std:0x73, main:word_number right)
+	]left[ * ]right[
+end
+
+export proc main:entry_point
+std:i32 (std:i32 argc, ptr std:string argv)
+	call std:print_int(main:word_number(`two times five times three`))
+	call std:print("\n")
+	return 0
+end

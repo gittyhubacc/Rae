@@ -1,0 +1,35 @@
+#include <std/io>
+
+using std
+
+attr greet:greeting
+(std:0x41, std:lit_string name)
+	call std:print("Hello ")
+	call std:print(]name[)
+	call std:print("\n")
+end
+
+attr greet:greeting
+(std:0x42, std:lit_string name)
+	call std:print("Goodbye ")
+	call std:print(]name[)
+	call std:print("\n")
+end
+
+attr greet:greetings
+(greet:greeting single)
+	]]single[[
+end
+
+attr greet:greetings
+(greet:greetings root, greet:greeting succ)
+	]]root[[
+	]]succ[[
+end
+
+export proc main:entry_point
+i32 (i32 argc, ptr std:string argv)
+	#synth greet:greetings(`B "Michael" A "Courtney"`)
+	synth greet:greetings(`B "Michael" A "Courtney" B "Ezra"`)
+	return 0
+end
